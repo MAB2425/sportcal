@@ -487,7 +487,7 @@ function toB64(file){
   });
 }
 
-var GEMINI_API_KEY = 'AIzaSyBLymCxoUOsa4UINgQSJKdc7pPmBmnBqUk';
+var GEMINI_API_KEY = localStorage.getItem('gemini_api_key') || '';
 
 async function callAI(b64,mt){
   var prompt = "Tu analyses une capture d'écran d'une application sportive (XPS, Rétroaction, NBHPA) d'un joueur de hockey, soccer et deck hockey au Québec.\nExtrait TOUS les événements visibles. Retourne un JSON array uniquement, sans markdown.\nChaque objet: title, sport (Hockey/Soccer/Deck Hockey/Tournoi/Autre), date (YYYY-MM-DD), time (HH:MM), opponent, location, league, eventType, note (vide).\nToutes les dates en 2026. Réponds UNIQUEMENT avec le JSON array.";
@@ -504,6 +504,48 @@ async function callAI(b64,mt){
 }
 
 renderCal();
+</script>
+
+<!-- CLE API MODAL -->
+<div class="modal-wrap" id="keyModal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-head">
+      <div>
+        <div class="modal-badge hockey" style="margin-bottom:5px;">Configuration</div>
+        <div class="modal-title">Clé API Gemini</div>
+      </div>
+    </div>
+    <div style="padding:16px 20px 20px;">
+      <div style="font-size:13px;color:var(--text2);margin-bottom:16px;line-height:1.6;">
+        Entre ta clé API une seule fois — elle sera sauvegardée sur ton appareil uniquement, jamais partagée.
+      </div>
+      <div style="background:var(--bg2);border-radius:10px;padding:14px;margin-bottom:16px;font-size:13px;line-height:1.8;">
+        <strong>1.</strong> Va sur <strong>aistudio.google.com</strong><br>
+        <strong>2.</strong> Connecte-toi avec Google<br>
+        <strong>3.</strong> Clique <strong>"Get API Key"</strong> → copie la clé
+      </div>
+      <div class="form-row">
+        <label class="form-label">Ta clé API (AIza...)</label>
+        <input class="form-input" id="keyInput" type="password" placeholder="AIzaSy...">
+      </div>
+      <button class="save-btn" id="saveKeyBtn">Enregistrer et continuer</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var key = localStorage.getItem('gemini_api_key');
+  if(!key){ setTimeout(function(){ document.getElementById('keyModal').classList.add('open'); }, 500); }
+  document.getElementById('saveKeyBtn').addEventListener('click', function(){
+    var k = document.getElementById('keyInput').value.trim();
+    if(!k){ alert('Entre ta clé API'); return; }
+    localStorage.setItem('gemini_api_key', k);
+    GEMINI_API_KEY = k;
+    document.getElementById('keyModal').classList.remove('open');
+  });
+})();
 </script>
 </body>
 </html>
